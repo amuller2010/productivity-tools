@@ -1,0 +1,5 @@
+python-dateutil
+jinja2
+jira
+oauthlib==0.7.2
+pycrypto

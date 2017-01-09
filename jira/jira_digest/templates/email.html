@@ -1,0 +1,91 @@
+{% macro format_jira_key(issue) %}
+    <a href="https://interana.atlassian.net/browse/{{ issue }}">{{ issue }}</a>
+{% endmacro %}
+
+{% macro style_th(value) %}
+    <th style="text-align: left; vertical-align: top; padding: 7px; font: bold 14px/20px Arial, sans-serif">{{ value }}</th>
+{% endmacro %}
+
+{% macro style_td() %}
+    <td style="padding: 0; border-collapse: collapse; border-left: 1px solid #cccccc; border-right: 1px solid #cccccc; border-top: 0; border-bottom: 0; padding: 0 15px 0 16px; background-color: #ffffff" bgcolor="#ffffff">
+{% endmacro %}
+
+{% macro style_cell() %}
+    style="padding: 0; border-collapse: collapse; text-align: left; vertical-align: top; padding: 7px"
+{% endmacro %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<body style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.429">
+<table id="background-table" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0; background-color: #f5f5f5">
+    <tr>
+    <td id="header-pattern-spacer" style="padding: 0; border-collapse: collapse; font-size: 10px; height: 10px; line-height: 10px" height="10">&nbsp;</td>
+    </tr>
+    <tr>
+    <td id="email-content-container" style="padding: 0; border-collapse: collapse; padding: 0 20px">
+        <table id="email-content-table" cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0; border-spacing: 0; border-collapse: separate">
+            <tr>
+            <td class="email-content-rounded-top" style="padding: 0; border-collapse: collapse; color: #ffffff; padding: 0 15px 0 16px; height: 15px; background-color: #ffffff; border-left: 1px solid #cccccc; border-top: 1px solid #cccccc; border-right: 1px solid #cccccc; border-bottom: 0; border-top-right-radius: 5px; border-top-left-radius: 5px; height: 10px; line-height: 10px; padding: 0 15px 0 16px; mso-line-height-rule: exactly" height="10" bgcolor="#ffffff">&nbsp;</td>
+            </tr>
+            <tr>
+            {{ style_td() }}
+                <table id="page-title-pattern" cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0">
+                    <tr>
+                    <td id="page-title-pattern-header-container" style="padding: 0; border-collapse: collapse; padding-right: 5px; font-size: 20px; line-height: 30px; mso-line-height-rule: exactly"> <span id="page-title-pattern-header" style="font-family: Arial, sans-serif; padding: 0; font-size: 20px; line-height: 30px; mso-text-raise: 2px; mso-line-height-rule: exactly; vertical-align: middle">Jira Digest</span> </td>
+                    </tr>
+                </table>
+            </td>
+            </tr>
+            <tr>
+            {{ style_td() }}
+                <table id="header-table" style="border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0">
+                    <tr>
+                        <th style="color: #707070; font: normal 14px/20px Arial, sans-serif; text-align: left; vertical-align: top; padding: 2px 0">Subscriber:</th>
+                        <td style="padding: 0; border-collapse: collapse; font: normal 14px/20px Arial, sans-serif; padding: 2px 0 2px 5px; vertical-align: top"> {{ args.user }} </td>
+                    </tr>
+                </table>
+            </td>
+            </tr>
+            <tr>
+            {{ style_td() }}
+                <table id="issuetable" border="0" cellpadding="2" cellspacing="0" width="100%" style="border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0; font: normal 14px/20px Arial, sans-serif">
+                    <tr>
+                    {{ style_th("T") }}
+                    {{ style_th("Key") }}
+                    {{ style_th("Summary") }}
+                    {{ style_th("P") }}
+                    {{ style_th("Field") }}
+                    {{ style_th("Author") }}
+                    {{ style_th("New Value") }}
+                    </tr>
+                {% for issue, summaries in summarized_issues.iteritems() if summaries|length > 0 %}
+                    <tr style="border-top: 1px solid #cccccc">
+                    <td rowspan="{{ summaries|length }}" {{ style_cell() }}><img src="cid:{{ issue.type|lower }}" style="display:block" height="16" width="16" border="0" align="absmiddle" alt="{{ issue.type }}" title="Issue Type"> </td>
+                    <td rowspan="{{ summaries|length }}" {{ style_cell() }}>{{ format_jira_key(issue.key) }}</td>
+                    <td rowspan="{{ summaries|length }}" {{ style_cell() }}>{{ issue.summary }}</td>
+                    <td rowspan="{{ summaries|length }}" {{ style_cell() }}><img src="cid:{{ issue.priority|lower }}" height="16" width="16" border="0" align="absmiddle" alt="{{ issue.priority }}"> </td>
+                    {% for summary in summaries %}
+                        {% if not loop.first %}
+                            <tr>
+                        {% endif %}
+                        <td {{ style_cell() }}>{{ summary.field }}</td>
+                        <td {{ style_cell() }}>{{ summary.author }}</td>
+                        <td {{ style_cell() }}>{{ summary.toStr }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </table>
+            </td>
+            </tr>
+            <tr>
+            <td class="email-content-rounded-bottom mobile-expand" style="padding: 0; border-collapse: collapse; color: #ffffff; padding: 0 15px 0 16px; height: 5px; line-height: 5px; background-color: #ffffff; border-top: 0; border-left: 1px solid #cccccc; border-bottom: 1px solid #cccccc; border-right: 1px solid #cccccc; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; mso-line-height-rule: exactly" height="5" bgcolor="#ffffff">&nbsp;</td>
+            </tr>
+        </table>
+    </td>
+    </tr>
+    <tr>
+        <td id="footer-pattern" style="padding: 0; border-collapse: collapse; padding: 12px 20px">&nbsp;</td>
+    </tr>
+</table>
+</body>
+</html>

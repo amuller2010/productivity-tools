@@ -221,7 +221,7 @@ def happened_in_time_window(date_string, hours_back):
     past hours_back hours
     '''
     parsed = parser.parse(date_string)
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now()
     now = now.replace(tzinfo=parsed.tzinfo)
     delta = now - parsed
     return delta.total_seconds() <= (hours_back * 3600)

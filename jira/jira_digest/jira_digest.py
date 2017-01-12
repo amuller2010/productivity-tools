@@ -21,6 +21,17 @@ JIRA_COMPONENTS = [  # Wrap strings in double quotes
     '"Import"',
     '"Frontend"'
 ]
+JIRA_FIELDS = [  # List of fields to return from api
+    'summary',
+    'description',
+    'created',
+    'comment',
+    'issuetype',
+    'assignee',
+    'priority',
+    'status',
+    'reporter'
+]
 
 SMTP_USER = ''
 SMTP_PASS = ''
@@ -119,7 +130,7 @@ def search_issues(jql_query):
     print('\nIssuing JIRA query: {}'.format(jql_query))
     jira = create_jira_client()
 
-    fields = 'summary, created, comment, issuetype, assignee, priority, status, reporter'
+    fields = ', '.join(JIRA_FIELDS)
     issues = jira.search_issues(
         jql_query,
         fields=fields,
@@ -175,7 +186,7 @@ def add_created(issues_to_summaries, issue, issue_tuple, args):
                 field='Issue Created',
                 author=issue.fields.reporter.displayName,
                 fromStr="",
-                toStr=""
+                toStr=truncate(issue.fields.description)
             )
         )
 
